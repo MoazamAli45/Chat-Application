@@ -68,3 +68,37 @@ exports.login = catchAsync(async (req, res) => {
   console.log("From Login ", user);
   createdSendToken(user, 200, res);
 });
+
+exports.protect = catchAsync(async (req, res, next) => {
+  //    Getting Token and check if it's there
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    //    Getting Token
+    token = req.headers.authorization.split(" ")[1];
+  }
+  if (!token) {
+    throw new AppError(
+      "You are not logged in! Please log in to get access",
+      401
+    );
+  }
+  //    Verification Token
+  const decoded = await jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decoded);
+  //    Check if user still exist
+  const currentUser = await User.findById(decoded.id);
+  console.log("User", currentUser);
+  if (!currentUser) {
+    throw new AppError(
+      "The user belonging to this token does no longer exist",
+      401
+    );
+  }
+
+  //    Grant Access to protected route
+  req.user = currentUser;
+  next();
+});

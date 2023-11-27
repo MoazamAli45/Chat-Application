@@ -1,17 +1,19 @@
 const express = require("express");
 const chatRoutes = require("./routes/chatRoutes");
+const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
 const { globalErrorHandler, notFound } = require("./middleware/errorHandler");
 const app = express();
 
 app.use(express.json());
 
+app.use(cors());
 app.get("/", (req, res) => {
   res.send("Welcome to Chat Application!");
 });
 
 app.use("/api/v1/chat", chatRoutes);
-app.use("/api/v1/auth", userRoutes);
+app.use("/api/v1/users", userRoutes);
 
 //  For Invalid Routes
 app.use(notFound);
