@@ -82,7 +82,7 @@ const SignUpPage = () => {
 
     try {
       const data = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/register`,
+        `${import.meta.env.VITE_API_URL}/api/v1/users/auth/register`,
         { name, email, password, profilePicture },
         config
       );
@@ -98,10 +98,6 @@ const SignUpPage = () => {
       JSON.stringify(
         localStorage.setItem("userInfo", JSON.stringify(data?.data?.data))
       );
-      setEmail("");
-      setPassword("");
-      setName("");
-      setProfilePicture("");
     } catch (err) {
       toast({
         title: "Error",
@@ -112,6 +108,11 @@ const SignUpPage = () => {
       });
       setLoading(false);
       return;
+    } finally {
+      setEmail("");
+      setPassword("");
+      setName("");
+      setProfilePicture("");
     }
   };
 
