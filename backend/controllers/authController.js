@@ -38,7 +38,7 @@ const createdSendToken = (user, statusCode, res) => {
 
 exports.register = catchAsync(async (req, res) => {
   console.log(req.body);
-  const { name, email, password, profilePic } = req.body;
+  const { name, email, password, profilePicture } = req.body;
   if (!name || !email || !password) {
     throw new AppError("Please Provide Name,Email and Password", 400);
   }
@@ -50,7 +50,7 @@ exports.register = catchAsync(async (req, res) => {
     name,
     email,
     password,
-    profilePic,
+    profilePic: profilePicture,
   });
 
   createdSendToken(user, 201, res);

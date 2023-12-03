@@ -2,10 +2,11 @@ import { Link } from "react-router-dom";
 import Chat from "../assets/chat";
 import { Button, useToast } from "@chakra-ui/react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 const SignUpPage = () => {
   const toast = useToast();
+  const navigate = useNavigate();
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [email, setEmail] = useState("");
@@ -98,6 +99,7 @@ const SignUpPage = () => {
       JSON.stringify(
         localStorage.setItem("userInfo", JSON.stringify(data?.data?.data))
       );
+      navigate("/chat");
     } catch (err) {
       toast({
         title: "Error",

@@ -4,6 +4,7 @@ import {
   Button,
   Menu,
   MenuButton,
+  MenuDivider,
   MenuItem,
   MenuList,
   Text,
@@ -11,8 +12,19 @@ import {
 } from "@chakra-ui/react";
 import { FaBell } from "react-icons/fa";
 import { ChevronDownIcon } from "@chakra-ui/icons";
-
+import { useContext } from "react";
+import ChatContext from "../../context/chatProvider";
+import ProfileModal from "./ProfileModal";
+import { useNavigate } from "react-router-dom";
 const ChatPageTopBar = () => {
+  const { user } = useContext(ChatContext);
+  const navigate = useNavigate();
+  // console.log(user);
+
+  const logoutHandler = () => {
+    localStorage.removeItem("userInfo");
+    navigate("/login");
+  };
   return (
     <>
       <div className="flex justify-between items-center bg-gray-200 p-2 sm:px-[30px] ">
@@ -35,11 +47,19 @@ const ChatPageTopBar = () => {
           </Menu>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-              <Avatar name="Moazam" size="sm" />
+              <Avatar
+                name={user?.user?.name}
+                size="sm"
+                src={user?.user?.profilePic}
+              />
             </MenuButton>
             <MenuList>
-              <MenuItem>My Profile</MenuItem>
-              <MenuItem>Log out</MenuItem>
+              {/*     Profile Modal is custom Component */}
+              <ProfileModal user={user?.user}>
+                <MenuItem>My Profile</MenuItem>
+              </ProfileModal>
+              <MenuDivider />
+              <MenuItem onClick={logoutHandler}>Log out</MenuItem>
             </MenuList>
           </Menu>
         </div>
