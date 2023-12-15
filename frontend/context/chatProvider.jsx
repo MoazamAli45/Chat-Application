@@ -3,7 +3,7 @@ import PropTypes from "prop-types";
 import { useNavigate } from "react-router-dom";
 //    Creating a Context Of Chat
 const ChatContext = createContext();
-
+//
 //   To Provide the Context to the App
 export const ChatProvider = ({ children }) => {
   const [user, setUser] = useState();

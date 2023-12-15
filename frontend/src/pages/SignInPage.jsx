@@ -34,10 +34,10 @@ const SignInPage = () => {
         duration: 5000,
         isClosable: true,
       });
-      console.log(data.data.data);
+      // console.log(data.data);
       setLoading(false);
       JSON.stringify(
-        localStorage.setItem("userInfo", JSON.stringify(data?.data?.data))
+        localStorage.setItem("userInfo", JSON.stringify(data?.data))
       );
       navigate("/chat");
     } catch (err) {
