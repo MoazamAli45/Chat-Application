@@ -2,6 +2,7 @@ import { useContext } from "react";
 import ChatPageTopBar from "../components/ChatPageTopBar";
 import ChatContext from "../../context/chatProvider";
 import Background from "/background.jpg";
+import MyChats from "../components/MyChats";
 const ChatPage = () => {
   const chatCtx = useContext(ChatContext);
   console.log(chatCtx.user);
@@ -13,6 +14,9 @@ const ChatPage = () => {
       }}
     >
       <ChatPageTopBar />
+      <div>
+        <MyChats />
+      </div>
     </div>
   );
 };

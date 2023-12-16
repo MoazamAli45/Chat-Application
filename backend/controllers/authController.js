@@ -70,6 +70,7 @@ exports.login = catchAsync(async (req, res) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log("From Protect", req.headers.authorization);
   //    Getting Token and check if it's there
   let token;
   if (
@@ -87,7 +88,6 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   //    Verification Token
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
-  console.log(decoded);
   //    Check if user still exist
   const currentUser = await User.findById(decoded.id);
   console.log("User", currentUser);

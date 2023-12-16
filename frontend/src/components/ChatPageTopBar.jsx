@@ -8,6 +8,7 @@ import {
   MenuDivider,
   MenuItem,
   MenuList,
+  Spinner,
   Text,
   Tooltip,
   useDisclosure,
@@ -16,8 +17,8 @@ import { FaBell } from "react-icons/fa";
 import { ChevronDownIcon } from "@chakra-ui/icons";
 import { useContext, useState } from "react";
 import ChatContext from "../../context/chatProvider";
-import ProfileModal from "./ProfileModal";
 import { useNavigate } from "react-router-dom";
+import ProfileModal from "./miscellaneous/ProfileModal";
 //    FOR DRAWER
 import {
   Drawer,
@@ -32,11 +33,12 @@ import axios from "axios";
 import UserLoading from "./miscellaneous/UserLoading";
 import UserListItem from "./miscellaneous/UserListItem";
 const ChatPageTopBar = () => {
-  const { user } = useContext(ChatContext);
+  const { user, setSelectedChat } = useContext(ChatContext);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
   const [userfound, setUserfound] = useState(true);
+  const [loadingChat, setLoadingChat] = useState(false);
 
   const navigate = useNavigate();
 
@@ -48,6 +50,36 @@ const ChatPageTopBar = () => {
   const logoutHandler = () => {
     localStorage.removeItem("userInfo");
     navigate("/login");
+  };
+
+  const accessChat = async (userId) => {
+    try {
+      setLoadingChat(true);
+      const config = {
+        headers: {
+          Content: "application/json",
+          Authorization: `Bearer ${user?.token}`,
+        },
+      };
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/chat`,
+        { userId },
+        config
+      );
+      console.log(data);
+      setSelectedChat(data?.chat);
+    } catch (err) {
+      console.log(err);
+      toast({
+        description: err.response.data.message || "Something went wrong!",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+        position: "top-left",
+      });
+    } finally {
+      setLoadingChat(false);
+    }
   };
 
   const searchHandler = async () => {
@@ -73,6 +105,7 @@ const ChatPageTopBar = () => {
       setLoading(true);
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/users?search=${search}`,
+
         config
       );
       console.log(data);
@@ -96,6 +129,7 @@ const ChatPageTopBar = () => {
       setLoading(false);
     }
   };
+  console.log(loadingChat);
 
   return (
     <>
@@ -127,7 +161,7 @@ const ChatPageTopBar = () => {
             </MenuButton>
             <MenuList>
               {/*     Profile Modal is custom Component */}
-              <ProfileModal user={user?.user}>
+              <ProfileModal user={user?.data?.user}>
                 <MenuItem>My Profile</MenuItem>
               </ProfileModal>
               <MenuDivider />
@@ -164,18 +198,18 @@ const ChatPageTopBar = () => {
             ) : !userfound ? (
               <p className="text-center pt-5">No Result found!</p>
             ) : (
-              <div className="flex flex-col gap-2 mt-2">
-                {searchResult?.map((user) => (
-                  <UserListItem
-                    user={user}
-                    key={user._id}
-                    // onClick={() => {
-                    //   navigate(`/chat/${user._id}`);
-                    //   onClose();
-                    // }}
-                  />
-                ))}
-              </div>
+              <>
+                <div className="flex flex-col gap-2 mt-2">
+                  {searchResult?.map((user) => (
+                    <UserListItem
+                      user={user}
+                      key={user._id}
+                      handleFunction={() => accessChat(user._id)}
+                    />
+                  ))}
+                </div>
+                {loadingChat && <Spinner />}
+              </>
             )}
           </DrawerBody>
         </DrawerContent>

@@ -1,13 +1,10 @@
 import { Avatar, Box, Text } from "@chakra-ui/react";
 import PropTypes from "prop-types";
 
-const UserListItem = ({ user }) => {
+const UserListItem = ({ user, handleFunction }) => {
   return (
-    // <div className="flex items-center gap-2 cursor-pointer" key={user._id}>
-    //   <Avatar name={user.name} size="sm" src={user.profilePic} />
-    //   <Text className="text-sm">{user.name}</Text>
-    // </div>
     <Box
+      onClick={handleFunction}
       cursor={"pointer"}
       className="flex items-center gap-2"
       bg="#E8E8E8"
@@ -43,4 +40,5 @@ export default UserListItem;
 
 UserListItem.propTypes = {
   user: PropTypes.object,
+  handleFunction: PropTypes.func,
 };
