@@ -118,7 +118,6 @@ const GroupChatModal = ({ children }) => {
       });
     }
   };
-  console.log("CHATS", chats);
   return (
     <>
       <span onClick={onOpen}>{children}</span>

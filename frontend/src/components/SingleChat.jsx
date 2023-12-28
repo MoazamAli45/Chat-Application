@@ -4,12 +4,14 @@ import ProfileModal from "./miscellaneous/ProfileModal";
 import { useContext } from "react";
 import ChatContext from "../../context/chatProvider";
 import { getSender, getSenderFull } from "./utils/getSender";
+import UpdateGroupModel from "./miscellaneous/UpdateGroupModel";
 const SingleChat = () => {
   const { selectedChat, setSelectedChat, user } = useContext(ChatContext);
+  console.log(selectedChat, "Check");
   return (
     <>
       {selectedChat ? (
-        <>
+        <div className="flex flex-col w-full">
           <Box
             fontSize={{ base: "28px", md: "30px" }}
             pb={3}
@@ -26,17 +28,23 @@ const SingleChat = () => {
                 <ProfileModal user={getSenderFull(user, selectedChat.users)} />
               </div>
             ) : (
-              <>
+              <div className="flex justify-between flex-1 ">
                 {selectedChat.chatName.toUpperCase()}
-                {/* <UpdateGroupChatModal
-                    fetchMessages={fetchMessages}
-                    fetchAgain={fetchAgain}
-                    setFetchAgain={setFetchAgain}
-                  /> */}
-              </>
+                <UpdateGroupModel chat={selectedChat} />
+              </div>
             )}
           </Box>
-        </>
+          <Box
+            className="flex flex-col
+          justify-end
+          bg-[#E8E8E8]
+          w-full
+          h-full
+          rounded-lg
+            overflow-hidden
+          "
+          ></Box>
+        </div>
       ) : (
         // to get socket.io on same page
         <Box className="flex items-center justify-center px-[150px]">
