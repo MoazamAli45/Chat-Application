@@ -3,6 +3,7 @@ import ChatPageTopBar from "../components/ChatPageTopBar";
 import ChatContext from "../../context/chatProvider";
 import Background from "/background.jpg";
 import MyChats from "../components/MyChats";
+import ChatBox from "../components/ChatBox";
 const ChatPage = () => {
   const chatCtx = useContext(ChatContext);
   console.log(chatCtx.user);
@@ -14,8 +15,9 @@ const ChatPage = () => {
       }}
     >
       <ChatPageTopBar />
-      <div>
+      <div className="flex ">
         <MyChats />
+        <ChatBox />
       </div>
     </div>
   );

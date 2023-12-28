@@ -76,6 +76,7 @@ exports.fetchChat = catchAsync(async (req, res) => {
 
   res.status(200).json({
     success: true,
+    length: chats.length,
     chats,
   });
 });
@@ -87,10 +88,13 @@ exports.createGroupChat = catchAsync(async (req, res) => {
   if (users.length < 2)
     throw new AppError("Please Provide Atleast Two Users", 400);
 
+  //   adding the user itself
+  users.push(req.user._id);
+
   const chatData = {
     chatName,
     isGroupChat: true,
-    users: [...users, req.user._id],
+    users: users,
     groupAdmin: req.user._id,
   };
   const createdChat = await Chat.create(chatData);

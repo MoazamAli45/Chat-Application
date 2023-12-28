@@ -6,6 +6,7 @@ import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import { getSender } from "./utils/getSender";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
+import UserLoading from "./miscellaneous/UserLoading";
 const MyChats = () => {
   const { selectedChat, setSelectedChat, chats, setChats } =
     useContext(ChatContext);
@@ -26,7 +27,7 @@ const MyChats = () => {
         `${import.meta.env.VITE_API_URL}/api/v1/chat`,
         config
       );
-      console.log(data);
+      // console.log(data, "CHECK");
       setChats(data?.chats);
     } catch (error) {
       console.log(error);
@@ -45,13 +46,9 @@ const MyChats = () => {
     setLoggedUser(data?.data?.user);
     fetchChats();
   }, []);
-
   return (
     <Box
-      d={{
-        base: selectedChat ? "none" : "flex",
-        md: "block",
-      }}
+      className={selectedChat ? "hidden md:block" : "block"}
       m={3}
       w={{
         base: "95%",
@@ -67,15 +64,12 @@ const MyChats = () => {
         d={"flex"}
         flexDir={"row"}
         justifyContent="space-between"
-        sx={{
-          justifyContent: "space-between",
-        }}
         alignItems={"center"}
         pb={3}
         px={3}
         w={"100%"}
       >
-        <div className="flex ">
+        <div className="flex gap-3">
           <Text fontSize={"xl"} fontWeight={"semibold"}>
             My Chats
           </Text>
@@ -100,35 +94,39 @@ const MyChats = () => {
         borderRadius="lg"
         overflowY="hidden"
       >
-        <Stack overflow={"auto"}>
-          {chats.map((chat) => (
-            <Box
-              onClick={() => setSelectedChat(chat)}
-              cursor="pointer"
-              bg={selectedChat === chat ? "#3BB2AC" : "#E8E8E8"}
-              color={selectedChat === chat ? "white" : "black"}
-              px={3}
-              py={2}
-              borderRadius="lg"
-              key={chat._id}
-            >
-              <Text>
-                {!chat.isGroupChat
-                  ? //    To check if user[0] is logged in user  then display other name
-                    getSender(loggedUser, chat.users)
-                  : chat.chatName}
-              </Text>
-              {chat.latestMessage && (
-                <Text fontSize="xs">
-                  <b>{chat.latestMessage.sender.name} : </b>
-                  {chat.latestMessage.content.length > 50
-                    ? chat.latestMessage.content.substring(0, 51) + "..."
-                    : chat.latestMessage.content}
+        {chats ? (
+          <Stack overflowY={"auto"} height={"360px"}>
+            {chats?.map((chat) => (
+              <Box
+                onClick={() => setSelectedChat(chat)}
+                cursor="pointer"
+                bg={selectedChat === chat ? "#3BB2AC" : "#E8E8E8"}
+                color={selectedChat === chat ? "white" : "black"}
+                px={3}
+                py={2}
+                borderRadius="lg"
+                key={chat._id}
+              >
+                <Text>
+                  {!chat.isGroupChat
+                    ? //    To check if user[0] is logged in user  then display other name
+                      getSender(loggedUser, chat.users)
+                    : chat.chatName}
                 </Text>
-              )}
-            </Box>
-          ))}
-        </Stack>
+                {chat.latestMessage && (
+                  <Text fontSize="xs">
+                    <b>{chat.latestMessage.sender.name} : </b>
+                    {chat.latestMessage.content.length > 50
+                      ? chat.latestMessage.content.substring(0, 51) + "..."
+                      : chat.latestMessage.content}
+                  </Text>
+                )}
+              </Box>
+            ))}
+          </Stack>
+        ) : (
+          <UserLoading />
+        )}
       </Box>
     </Box>
   );

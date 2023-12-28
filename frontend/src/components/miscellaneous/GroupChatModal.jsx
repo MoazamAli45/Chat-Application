@@ -30,7 +30,7 @@ const GroupChatModal = ({ children }) => {
   //    USER SELECTEDUSER FOR GROUP CHAT
   const [selectedUser, setSelectedUser] = useState([]);
 
-  const { user } = useContext(ChatContext);
+  const { user, setChats, chats } = useContext(ChatContext);
   //    Toast
   const toast = useToast();
 
@@ -50,7 +50,6 @@ const GroupChatModal = ({ children }) => {
         `${import.meta.env.VITE_API_URL}/api/v1/users?search=${searchQuery}`,
         config
       );
-      console.log(data);
       setSearchResult(data?.users);
     } catch (error) {
       toast({
@@ -68,13 +67,58 @@ const GroupChatModal = ({ children }) => {
     if (selectedUser.includes(userToAdd)) return;
     setSelectedUser([...selectedUser, userToAdd]);
   };
-  console.log(selectedUser);
   const deleteSelectedUser = (userToDelete) => {
     setSelectedUser(
       selectedUser.filter((user) => user._id !== userToDelete._id)
     );
-    console.log(selectedUser);
   };
+  console.log(selectedUser);
+  const submitHandler = async () => {
+    if (!groupChatName || !selectedUser) {
+      toast({
+        title: "Error",
+        description: "Please fill all the fields",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+
+    try {
+      const config = {
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
+      };
+
+      const { data } = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/v1/chat/group-chat`,
+        {
+          chatName: groupChatName,
+          //  user itself will be added
+          users: selectedUser.map((user) => user._id),
+        },
+        config
+      );
+      setChats([data?.chat, ...chats]);
+      toast({
+        title: "Success",
+        description: "Group Chat Created Successfully",
+        status: "success",
+        duration: 3000,
+      });
+      onClose();
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error?.response?.data?.message || "Something went wrong!",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    }
+  };
+  console.log("CHATS", chats);
   return (
     <>
       <span onClick={onOpen}>{children}</span>
@@ -127,7 +171,9 @@ const GroupChatModal = ({ children }) => {
             <Button colorScheme="blue" mr={3} onClick={onClose}>
               Close
             </Button>
-            <Button variant="ghost">Create Group</Button>
+            <Button variant="ghost" onClick={submitHandler}>
+              Create Group
+            </Button>
           </ModalFooter>
         </ModalContent>
       </Modal>
