@@ -2,6 +2,7 @@ const express = require("express");
 const chatRoutes = require("./routes/chatRoutes");
 const cors = require("cors");
 const userRoutes = require("./routes/userRoutes");
+const messageRoutes = require("./routes/messageRoutes");
 const { globalErrorHandler, notFound } = require("./middleware/errorHandler");
 const app = express();
 
@@ -14,6 +15,7 @@ app.get("/", (req, res) => {
 
 app.use("/api/v1/chat", chatRoutes);
 app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/message", messageRoutes);
 
 //  For Invalid Routes
 app.use(notFound);

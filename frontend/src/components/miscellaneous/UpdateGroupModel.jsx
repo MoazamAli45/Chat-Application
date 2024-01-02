@@ -32,7 +32,6 @@ const UpdateGroupModel = () => {
 
   //    Component States
   const [groupChatName, setGroupChatName] = useState("");
-  const [searchedUser, setSearchedUser] = useState("");
   const [searchedUserResult, setSearchedUserResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [renameLoading, setRenameLoading] = useState(false);
@@ -85,7 +84,6 @@ const UpdateGroupModel = () => {
   //   For Searching User
   const searchHandler = async (searchQuery) => {
     if (!searchQuery) return;
-    setSearchedUser(searchQuery);
 
     const config = {
       headers: {
