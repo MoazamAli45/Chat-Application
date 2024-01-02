@@ -7,7 +7,6 @@ import { getSender, getSenderFull } from "./utils/getSender";
 import UpdateGroupModel from "./miscellaneous/UpdateGroupModel";
 const SingleChat = () => {
   const { selectedChat, setSelectedChat, user } = useContext(ChatContext);
-  console.log(selectedChat, "Check");
   return (
     <>
       {selectedChat ? (

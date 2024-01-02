@@ -12,6 +12,9 @@ export const ChatProvider = ({ children }) => {
   const [selectedChat, setSelectedChat] = useState();
   //    CHATS
   const [chats, setChats] = useState([]);
+  //    For Again Fetching
+  const [fetchAgain, setFetchAgain] = useState(false);
+
   const navigate = useNavigate();
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
@@ -25,7 +28,16 @@ export const ChatProvider = ({ children }) => {
 
   return (
     <ChatContext.Provider
-      value={{ user, setUser, selectedChat, setSelectedChat, chats, setChats }}
+      value={{
+        user,
+        setUser,
+        selectedChat,
+        setSelectedChat,
+        chats,
+        setChats,
+        fetchAgain,
+        setFetchAgain,
+      }}
     >
       {children}
     </ChatContext.Provider>

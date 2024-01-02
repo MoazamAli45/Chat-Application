@@ -66,7 +66,7 @@ const ChatPageTopBar = () => {
         { userId },
         config
       );
-      console.log(data);
+      // console.log(data);
       setSelectedChat(data?.chat);
     } catch (err) {
       console.log(err);

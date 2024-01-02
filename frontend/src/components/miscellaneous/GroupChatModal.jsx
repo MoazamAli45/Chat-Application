@@ -30,7 +30,8 @@ const GroupChatModal = ({ children }) => {
   //    USER SELECTEDUSER FOR GROUP CHAT
   const [selectedUser, setSelectedUser] = useState([]);
 
-  const { user, setChats, chats } = useContext(ChatContext);
+  const { user, setChats, chats, setFetchAgain, fetchAgain } =
+    useContext(ChatContext);
   //    Toast
   const toast = useToast();
 
@@ -72,7 +73,6 @@ const GroupChatModal = ({ children }) => {
       selectedUser.filter((user) => user._id !== userToDelete._id)
     );
   };
-  console.log(selectedUser);
   const submitHandler = async () => {
     if (!groupChatName || !selectedUser) {
       toast({
@@ -107,6 +107,7 @@ const GroupChatModal = ({ children }) => {
         status: "success",
         duration: 3000,
       });
+      setFetchAgain(!fetchAgain);
       onClose();
     } catch (error) {
       toast({

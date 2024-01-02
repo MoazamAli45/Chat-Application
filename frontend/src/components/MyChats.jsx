@@ -8,7 +8,7 @@ import { getSender } from "./utils/getSender";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import UserLoading from "./miscellaneous/UserLoading";
 const MyChats = () => {
-  const { selectedChat, setSelectedChat, chats, setChats } =
+  const { selectedChat, setSelectedChat, chats, setChats, fetchAgain } =
     useContext(ChatContext);
   //    LOGGED USER COMPONENT STATE TO SHOW THE CHAT ACCORDINGLY
   const [loggedUser, setLoggedUser] = useState();
@@ -45,7 +45,7 @@ const MyChats = () => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
     setLoggedUser(data?.data?.user);
     fetchChats();
-  }, []);
+  }, [fetchAgain]);
   return (
     <Box
       className={selectedChat ? "hidden md:block" : "block"}

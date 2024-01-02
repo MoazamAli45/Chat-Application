@@ -70,6 +70,7 @@ exports.login = catchAsync(async (req, res) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
+  console.log(req.headers);
   console.log("From Protect", req.headers.authorization);
   //    Getting Token and check if it's there
   let token;

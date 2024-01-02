@@ -136,8 +136,9 @@ exports.removeFromGroup = catchAsync(async (req, res) => {
   if (chat.groupAdmin.toString() !== req.user._id.toString())
     throw new AppError("You are not the admin of this group", 403);
 
-  if (chat.users.length <= 2)
+  if (!req.user._id === userId && chat.users.length <= 2)
     throw new AppError("You can not remove all the users", 403);
+
   const index = chat.users.indexOf(userId);
   if (index > -1) {
     chat.users.splice(index, 1);
