@@ -183,7 +183,13 @@ const UpdateGroupModel = () => {
   };
 
   const removeHandler = async (userToDelete) => {
-    if (selectedChat.groupAdmin._id !== user?.data?.user._id) {
+    console.log(userToDelete._id === user?.data?.user._id, "Check");
+    //  IF NOT DELETING LOGGED IN USER
+    //  LOGGEDIN USER CAN LEAVE THE GROUP
+    if (
+      selectedChat.groupAdmin._id !== user?.data?.user._id &&
+      userToDelete._id !== user?.data?.user._id
+    ) {
       toast({
         title: "Error",
         description: "You are not the admin of this group",

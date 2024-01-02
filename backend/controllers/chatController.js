@@ -133,7 +133,12 @@ exports.removeFromGroup = catchAsync(async (req, res) => {
   const { chatId, userId } = req.body;
   const chat = await Chat.findById(chatId);
   if (!chat) throw new AppError("No Chat Found", 404);
-  if (chat.groupAdmin.toString() !== req.user._id.toString())
+
+  //   USER CAN LEAVE BY HIMSELF
+  if (
+    chat.groupAdmin.toString() !== req.user._id.toString() &&
+    req.user._id.toString() !== userId.toString()
+  )
     throw new AppError("You are not the admin of this group", 403);
 
   if (!req.user._id === userId && chat.users.length <= 2)
