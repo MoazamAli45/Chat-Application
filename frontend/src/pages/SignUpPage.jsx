@@ -78,6 +78,7 @@ const SignUpPage = () => {
     const config = {
       headers: {
         "Content-Type": "application/json",
+        withCredentials: true,
       },
     };
 
@@ -118,7 +119,6 @@ const SignUpPage = () => {
     }
   };
 
-  // console.log(import.meta.env.VITE_API_URL);
   return (
     <section className="bg-gray-50 pt-5">
       <div className="flex flex-col items-center justify-center px-6 my-20  mx-auto md:h-screen lg:py-0">
