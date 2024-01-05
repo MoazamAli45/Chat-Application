@@ -17,7 +17,10 @@ const server = app.listen(PORT, () => {
 const io = require("socket.io")(server, {
   pingtimeout: 60000,
   cors: {
-    origin: "http://localhost:5173",
+    // origin: "http://localhost:5173",
+
+    //   FOR PRODUCTION
+    origin: "*",
     // credentials: true,
   },
 });
