@@ -37,7 +37,6 @@ const createdSendToken = (user, statusCode, res) => {
 };
 
 exports.register = catchAsync(async (req, res) => {
-  console.log(req.body);
   const { name, email, password, profilePicture } = req.body;
   if (!name || !email || !password) {
     throw new AppError("Please Provide Name,Email and Password", 400);
@@ -70,8 +69,6 @@ exports.login = catchAsync(async (req, res) => {
 });
 
 exports.protect = catchAsync(async (req, res, next) => {
-  console.log(req.headers);
-  console.log("From Protect", req.headers.authorization);
   //    Getting Token and check if it's there
   let token;
   if (
@@ -91,7 +88,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   const decoded = await jwt.verify(token, process.env.JWT_SECRET);
   //    Check if user still exist
   const currentUser = await User.findById(decoded.id);
-  console.log("User", currentUser);
+  // console.log("User", currentUser);
   if (!currentUser) {
     throw new AppError(
       "The user belonging to this token does no longer exist",

@@ -32,8 +32,11 @@ import { useToast } from "@chakra-ui/react";
 import axios from "axios";
 import UserLoading from "./miscellaneous/UserLoading";
 import UserListItem from "./miscellaneous/UserListItem";
+import { getSender } from "./utils/getSender";
+import NotificationBadge from "./miscellaneous/NotificationBadge";
 const ChatPageTopBar = () => {
-  const { user, setSelectedChat } = useContext(ChatContext);
+  const { user, setSelectedChat, notification, setNotification } =
+    useContext(ChatContext);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [searchResult, setSearchResult] = useState([]);
@@ -129,7 +132,6 @@ const ChatPageTopBar = () => {
       setLoading(false);
     }
   };
-  console.log(loadingChat);
 
   return (
     <>
@@ -145,18 +147,42 @@ const ChatPageTopBar = () => {
 
         <Text fontSize={"24px"}>Team Chat App</Text>
 
-        <div className="flex gap-[5px]">
+        <div className="flex gap-[10px]">
           <Menu>
             <MenuButton>
-              <FaBell />
+              <NotificationBadge count={notification.length}>
+                <FaBell />
+              </NotificationBadge>
             </MenuButton>
+            <MenuList className="px-2">
+              {!notification.length && "No Message Yet!"}
+              {notification?.map((msg) => (
+                <MenuItem
+                  key={msg._id}
+                  onClick={() => {
+                    setSelectedChat(msg.chat);
+                    //  Now removing that notification
+                    setNotification(
+                      notification.filter((m) => m._id !== msg._id)
+                    );
+                  }}
+                >
+                  {msg.chat.isGroupChat
+                    ? `New Message in ${msg.chat.chatName}`
+                    : `New Message from ${getSender(
+                        user?.data?.user,
+                        msg.chat.users
+                      )}`}
+                </MenuItem>
+              ))}
+            </MenuList>
           </Menu>
           <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Avatar
-                name={user?.user?.name}
+                name={user?.data?.user?.name}
                 size="sm"
-                src={user?.user?.profilePic}
+                src={user?.data?.user?.profilePic}
               />
             </MenuButton>
             <MenuList>

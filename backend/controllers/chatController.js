@@ -45,6 +45,8 @@ exports.accessChat = catchAsync(async (req, res) => {
     const fullChat = await Chat.findById(createdChat._id)
       .populate("users", "-password")
       .populate("latestMessage");
+
+    console.log("fullChat", fullChat);
     res.status(200).json({
       success: true,
       chat: fullChat,
@@ -68,6 +70,7 @@ exports.fetchChat = catchAsync(async (req, res) => {
     .populate("latestMessage")
     .sort({ updatedAt: -1 });
 
+  console.log("results", results);
   //   To populate in order to have the latest message sender details
   const chats = await User.populate(results, {
     path: "latestMessage.sender",

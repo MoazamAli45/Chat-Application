@@ -15,14 +15,48 @@ import ChatContext from "../../context/chatProvider";
 import { getSender, getSenderFull } from "./utils/getSender";
 import UpdateGroupModel from "./miscellaneous/UpdateGroupModel";
 import axios from "axios";
+import Lottie from "react-lottie";
 import ScrollableChat from "./ScrollableChat";
+
+import animationData from "./animations/typing1.json";
+
+// SOCKET
+import io from "socket.io-client";
+
+const ENDPOINT = "http://localhost:3000";
+
+let socket, selectedChatCompare;
+
 const SingleChat = () => {
-  const { selectedChat, setSelectedChat, user } = useContext(ChatContext);
+  const {
+    selectedChat,
+    setSelectedChat,
+    user,
+    fetchAgain,
+    setFetchAgain,
+    notification,
+    setNotification,
+  } = useContext(ChatContext);
   const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [socketConnected, setSocketConnected] = useState(false);
+
+  //  FOR TYPING LOGIC
+  const [typing, setTyping] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
 
   const toast = useToast();
+
+  //  FOR TYPING ANIMATIONS
+  const defaultOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: animationData,
+    rendererSettings: {
+      preserveAspectRatio: "xMidYMid slice",
+    },
+  };
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -40,6 +74,8 @@ const SingleChat = () => {
       setMessages(data?.messages);
 
       setLoading(false);
+      //   To RECEIVE MESSAGES in REAL TIME TO JOIN IN A ROOM
+      socket.emit("join chat", selectedChat._id);
     } catch (error) {
       setLoading(false);
       toast({
@@ -51,11 +87,51 @@ const SingleChat = () => {
       });
     }
   };
+  //   INITIALIZE SOCKET
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    const userData = user?.data?.user;
 
-  console.log(messages);
+    //   SENDING DATA FOR SETUP OF SOCKET
+    if (userData) {
+      socket.emit("setup", userData);
+    } else {
+      console.log("User data is null or undefined.");
+    }
+    //   ON Receiving from Server
+    socket.on("connected", () => setSocketConnected(true));
+
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
+  }, []);
+
   useEffect(() => {
     fetchMessages();
+
+    //  TO KEEP BACKUP OF SELECTED CHAT
+    selectedChatCompare = selectedChat;
   }, [selectedChat]);
+
+  //  FOr Receiving Messages
+  //  Every time renders
+
+  useEffect(() => {
+    //  IF WE RECEIVE ANYTHING NEW THEN ADD MESSAGES
+    socket.on("message received", (newMessageReceived) => {
+      if (
+        !selectedChatCompare ||
+        selectedChatCompare._id !== newMessageReceived.chat._id
+      ) {
+        //  give notification
+        if (!notification.includes(newMessageReceived))
+          setNotification([newMessageReceived, ...notification]);
+        setFetchAgain(!fetchAgain);
+        console.log("NOTIFICATION", notification);
+      } else {
+        setMessages([...messages, newMessageReceived]);
+      }
+    });
+  });
 
   const sendMessageHandler = async () => {
     if (!newMessage) return;
@@ -72,6 +148,8 @@ const SingleChat = () => {
       chatId: selectedChat._id,
       content: newMessage,
     };
+
+    console.log("Body", body);
     try {
       setLoading(true);
       const { data } = await axios.post(
@@ -79,8 +157,9 @@ const SingleChat = () => {
         body,
         config
       );
-      console.log(data, "Message");
       setNewMessage("");
+      //  TO SEND MESSAGE TO SERVER
+      socket.emit("new message", data?.message);
       setMessages([...messages, data?.message]);
     } catch (error) {
       console.log(error);
@@ -100,8 +179,32 @@ const SingleChat = () => {
 
   const sendMessageOnKey = (e) => {
     if (e.key === "Enter" && newMessage) {
+      //  IF ENTER IS PRESSED MEANS STOP TYPING
+      socket.emit("stop typing", selectedChat._id);
       sendMessageHandler();
     }
+  };
+
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
+
+    if (!socketConnected) return;
+
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    //  AFTER 3 SECONDS STOP TYPING
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
   };
 
   return (
@@ -120,8 +223,10 @@ const SingleChat = () => {
             />
             {!selectedChat.isGroupChat ? (
               <div className="flex justify-between flex-1 ">
-                {getSender(user, selectedChat.users)}
-                <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+                {getSender(user?.data?.user, selectedChat?.users)}
+                <ProfileModal
+                  user={getSenderFull(user?.data?.user, selectedChat?.users)}
+                />
               </div>
             ) : (
               <div className="flex justify-between flex-1 ">
@@ -158,6 +263,22 @@ const SingleChat = () => {
               >
                 {/* message */}
                 <ScrollableChat messages={messages} />
+                {isTyping ? (
+                  <div>
+                    <Lottie
+                      options={defaultOptions}
+                      width={60}
+                      // height={100}
+                      size={20}
+                      style={{
+                        marginLeft: "20px",
+                        marginBottom: 15,
+                      }}
+                    />
+                  </div>
+                ) : (
+                  <></>
+                )}
               </div>
             )}
             <FormControl
@@ -167,6 +288,7 @@ const SingleChat = () => {
                 my-2
                 w-[90%]
                 mx-auto
+                mt-auto
           
                 "
             >
@@ -177,7 +299,7 @@ const SingleChat = () => {
                 placeholder="Type a message..."
                 className="rounded-full"
                 value={newMessage}
-                onChange={(e) => setNewMessage(e.target.value)}
+                onChange={typingHandler}
               />
               <Button
                 colorScheme="blue"

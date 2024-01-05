@@ -12,7 +12,7 @@ import ChatContext from "../../context/chatProvider";
 const ScrollableChat = ({ messages }) => {
   const { user } = useContext(ChatContext);
   //   console.log(user);
-  console.log(messages);
+  // console.log(messages);
   return (
     // <ScrollableFeed>
     //   {messages &&

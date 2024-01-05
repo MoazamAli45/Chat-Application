@@ -27,7 +27,6 @@ const MyChats = () => {
         `${import.meta.env.VITE_API_URL}/api/v1/chat`,
         config
       );
-      // console.log(data, "CHECK");
       setChats(data?.chats);
     } catch (error) {
       console.log(error);
@@ -41,6 +40,7 @@ const MyChats = () => {
     }
   };
 
+  console.log("CHATS", chats);
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
     setLoggedUser(data?.data?.user);

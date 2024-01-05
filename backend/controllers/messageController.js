@@ -50,7 +50,6 @@ const getAllMessages = catchAsync(async (req, res) => {
     .populate("sender", "-password")
     .populate("chat");
 
-  console.log("message", messages);
   if (!messages) {
     throw new AppError("No Message Found", 404);
   }

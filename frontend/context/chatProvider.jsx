@@ -14,6 +14,8 @@ export const ChatProvider = ({ children }) => {
   const [chats, setChats] = useState([]);
   //    For Again Fetching
   const [fetchAgain, setFetchAgain] = useState(false);
+  //  FOR NOTIFICATION
+  const [notification, setNotification] = useState([]);
 
   const navigate = useNavigate();
   useEffect(() => {
@@ -37,6 +39,8 @@ export const ChatProvider = ({ children }) => {
         setChats,
         fetchAgain,
         setFetchAgain,
+        notification,
+        setNotification,
       }}
     >
       {children}
