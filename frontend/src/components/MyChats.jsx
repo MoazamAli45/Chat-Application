@@ -7,6 +7,7 @@ import axios from "axios";
 import { getSender } from "./utils/getSender";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
 import UserLoading from "./miscellaneous/UserLoading";
+import { useNavigate } from "react-router-dom";
 const MyChats = () => {
   const { selectedChat, setSelectedChat, chats, setChats, fetchAgain } =
     useContext(ChatContext);
@@ -14,6 +15,7 @@ const MyChats = () => {
   const [loggedUser, setLoggedUser] = useState();
   console.log("LOGGED USER", loggedUser);
   const toast = useToast();
+  const navigate = useNavigate();
 
   const fetchChats = async () => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
@@ -22,6 +24,8 @@ const MyChats = () => {
         Authorization: `Bearer ${data?.token}`,
       },
     };
+
+    if (!data) navigate("/login");
     try {
       const { data } = await axios.get(
         `${import.meta.env.VITE_API_URL}/api/v1/chat`,

@@ -6,7 +6,11 @@ const ChatBox = () => {
   const { selectedChat } = useContext(ChatContext);
   return (
     <Box
-      className={selectedChat ? "flex md:flex" : "hidden md:flex"}
+      className={
+        selectedChat
+          ? "flex md:flex min-h-[80vh] md:min-h-min "
+          : "hidden md:flex min-h-[80vh] md:min-h-min"
+      }
       m={3}
       w={{
         base: "95%",

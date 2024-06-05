@@ -1,6 +1,5 @@
 import { createContext, useEffect, useState } from "react";
 import PropTypes from "prop-types";
-import { useNavigate } from "react-router-dom";
 //    Creating a Context Of Chat
 const ChatContext = createContext();
 //
@@ -17,16 +16,11 @@ export const ChatProvider = ({ children }) => {
   //  FOR NOTIFICATION
   const [notification, setNotification] = useState([]);
 
-  const navigate = useNavigate();
   useEffect(() => {
     const data = JSON.parse(localStorage.getItem("userInfo"));
 
     setUser(data);
-
-    if (!data) {
-      navigate("/login");
-    }
-  }, [navigate]);
+  }, []);
 
   return (
     <ChatContext.Provider

@@ -14,59 +14,6 @@ const ScrollableChat = ({ messages }) => {
   //   console.log(user);
   // console.log(messages);
   return (
-    // <ScrollableFeed>
-    //   {messages &&
-    //     messages.map((message, index) => (
-    //       <div key={message._id} className="flex">
-    //         {/*  ONLY SHOWING AVATAR IF DIFFERENT USER */}
-    //         {isSameSender(messages, message, index, user.data.user._id) ||
-    //           (isLastMessage(messages, message, index, user.data.user._id) && (
-    //             <Tooltip
-    //               label={message.sender.name}
-    //               placement="bottom-start"
-    //               hasArrow
-    //             >
-    //               <Avatar
-    //                 mt="7px"
-    //                 mr={1}
-    //                 size="sm"
-    //                 cursor="pointer"
-    //                 name={message.sender.name}
-    //                 src={message.sender.profilePic}
-    //               />
-    //             </Tooltip>
-    //           ))}
-    //         <span
-    //           style={{
-    //             backgroundColor: `${
-    //               message.sender._id === user.data.user_id
-    //                 ? "#BEE3F8"
-    //                 : "#B9F5D0"
-    //             }`,
-    //             marginLeft: isSameSenderMargin(
-    //               messages,
-    //               message,
-    //               index,
-    //               user.data.user._id
-    //             ),
-    //             marginTop: isSameUser(
-    //               messages,
-    //               message,
-    //               index,
-    //               user.data.user._id
-    //             )
-    //               ? 3
-    //               : 10,
-    //             borderRadius: "20px",
-    //             padding: "5px 15px",
-    //             maxWidth: "75%",
-    //           }}
-    //         >
-    //           {message.content}
-    //         </span>
-    //       </div>
-    //     ))}
-    // </ScrollableFeed>
     <ScrollableFeed>
       {messages &&
         messages.map((m, i) => (
