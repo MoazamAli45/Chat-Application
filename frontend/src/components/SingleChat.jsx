@@ -23,10 +23,10 @@ import animationData from "./animations/typing1.json";
 // SOCKET
 import io from "socket.io-client";
 
-const ENDPOINT = "http://localhost:3000/";
+// const ENDPOINT = "http://localhost:3000/";
 
 // FOR  PRODUCTION
-// const ENDPOINT = "https://chat-application-amber-pi.vercel.app/";
+const ENDPOINT = "https://chat-application-amber-pi.vercel.app/";
 
 let socket, selectedChatCompare;
 
