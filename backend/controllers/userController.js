@@ -25,9 +25,12 @@ const getAllUser = catchAsync(async (req, res) => {
     : {};
 
   //    I want to get all users except logged In
-  const users = await await userModel
+  const users = await userModel
     .find({ ...keyword })
     .find({ _id: { $ne: req.user._id } });
+
+  console.log("Users", users);
+
   res.status(200).json({
     success: true,
     total: users.length,
